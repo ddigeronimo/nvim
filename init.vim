@@ -135,6 +135,9 @@ set clipboard+=unnamedplus
 " Wait for half a second for keymap sequences (or to launch which-key)
 set timeoutlen=500
 
+" Share one statusline among all windows
+set laststatus=3
+
 " Terminal buffer specific settings
 function! TerminalSettings()
     setlocal nonumber
@@ -194,6 +197,9 @@ nnoremap <Leader>v <C-v>
 
 " Map ranger to <Leader>r instead of <Leader>f
 map <Leader>r :RnvimrToggle<CR>
+
+" Launch fugitive status menu with <leader>g
+nnoremap <Leader>g <cmd>Git<cr>
 
 " Telescope bindings
 nnoremap <leader>ff <cmd>Telescope find_files<cr>

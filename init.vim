@@ -183,20 +183,20 @@ cnoremap kj <C-c>
 nnoremap <Leader>w <C-w>
 
 " Close the current buffer without closing the window/split
-map <leader>q :bp<bar>sp<bar>bn<bar>bd<CR>
+noremap <leader>q :bp<bar>sp<bar>bn<bar>bd<CR>
 
 " Start interactive EasyAlign in visual mode (e.g. vipga)
-xmap ga <Plug>(EasyAlign)
+xnoremap ga <Plug>(EasyAlign)
 
 " Start interactive EasyAlign for a motion/text object (e.g. gaip)
-nmap ga <Plug>(EasyAlign)
+nnoremap ga <Plug>(EasyAlign)
 
 " Windows terminal takes away <C-v> for visual block, so swap it to use the
 " leader key
 nnoremap <Leader>v <C-v>
 
 " Map ranger to <Leader>r instead of <Leader>f
-map <Leader>r :RnvimrToggle<CR>
+noremap <Leader>r :RnvimrToggle<CR>
 
 " Launch fugitive status menu with <leader>g
 nnoremap <Leader>g <cmd>Git<cr>

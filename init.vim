@@ -41,12 +41,20 @@ Plug 'folke/which-key.nvim'
 Plug 'kevinhwang91/rnvimr'
 " Lightweight status line
 Plug 'nvim-lualine/lualine.nvim'
+
+" * Completion *
 " Completion engine
 Plug 'hrsh7th/nvim-cmp'
-" LSP integration for nvim-cmp
+" Snippet engine
+Plug 'L3MON4D3/LuaSnip'
+Plug 'rafamadriz/friendly-snippets'
+" nvim-cmp integrations
 Plug 'hrsh7th/cmp-nvim-lsp'
-" Snippet engine, also needed for cmp-nvim-lsp
-Plug 'hrsh7th/vim-vsnip' 
+Plug 'hrsh7th/cmp-buffer'
+Plug 'hrsh7th/cmp-path'
+Plug 'hrsh7th/cmp-cmdline'
+Plug 'hrsh7th/cmp-nvim-lua'
+Plug 'saadparwaiz1/cmp_luasnip'
 
 " * Colorschemes *
 " Add LSP support to colorschemes without LSP or COC highlight groups
@@ -61,8 +69,6 @@ Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
 " Icons for telescope, lualine, and other plugins
 Plug 'kyazdani42/nvim-web-devicons'
-" vsnip LSP integration, needed for cmp-nvim-lsp and vim-vimsnip to work together
-Plug 'hrsh7th/vim-vsnip-integ'
 call plug#end()
 
 " Replace Netrw with Ranger
@@ -89,6 +95,7 @@ lua require("telescope_config")
 lua require("lualine").setup()
 
 " Completion setup
+set completeopt=menu,menuone,noselect,preview
 lua require("cmp_config")
 
 " Colorscheme setup

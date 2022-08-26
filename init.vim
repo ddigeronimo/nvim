@@ -49,6 +49,8 @@ Plug 'hrsh7th/cmp-nvim-lsp'
 Plug 'hrsh7th/vim-vsnip' 
 
 " * Colorschemes *
+" Add LSP support to colorschemes without LSP or COC highlight groups
+Plug 'folke/lsp-colors.nvim'
 Plug 'NLKNguyen/papercolor-theme'
 Plug 'folke/tokyonight.nvim', { 'branch' : 'main' }
 
@@ -86,20 +88,21 @@ lua require("lualine").setup()
 " Completion setup
 lua require("cmp_config")
 
+" Colorscheme setup
+if (has("termguicolors"))
+    set termguicolors
+endif
+lua require("lsp-colors").setup( { Error = "#db4b4b", Warning = "#e0af68", Information = "#0db9d7", Hint = "#10B981" })
+let g:tokyonight_style = "storm"
+let g:tokyonight_italic_comments = 0
+let g:tokyonight_italic_keywords = 0
+colorscheme tokyonight
+
 "========General settings========
 
 " Use relative line numbers, but display the true number of the current line
 set number
 set relativenumber
-
-" Colorscheme setup
-if (has("termguicolors"))
-    set termguicolors
-    let g:tokyonight_style = "night"
-    let g:tokyonight_italic_comments = 0
-    let g:tokyonight_italic_keywords = 0
-    colorscheme tokyonight
-endif
 
 " Allows you to leave a file in the background regardless of save status
 " Also saves undo history even after saving and changing files

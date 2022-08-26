@@ -198,8 +198,10 @@ nnoremap <Leader>v <C-v>
 " Map ranger to <Leader>r instead of <Leader>f
 noremap <Leader>r :RnvimrToggle<CR>
 
-" Launch fugitive status menu with <leader>g
-nnoremap <Leader>g <cmd>Git<cr>
+"Git bindings - <Leader>g
+nnoremap <Leader>gs <cmd>Git<cr>
+nnoremap <Leader>ghp <cmd>GitGutterPreviewHunk<cr>
+nnoremap <leader>ghs <cmd>GitGutterStageHunk<cr>
 
 " Telescope bindings
 nnoremap <leader>ff <cmd>Telescope find_files<cr>
@@ -209,5 +211,6 @@ nnoremap <leader>fh <cmd>Telescope help_tags<cr>
 nnoremap <leader>fd <cmd>Telescope diagnostics<cr>
 nnoremap <leader>f; <cmd>Telescope commands<cr>
 nnoremap <leader>fr <cmd>Telescope resume<cr>
+nnoremap <leader>fo <cmd>Telescope oldfiles<cr>
 " Break with leader-f for theme binding from VSCode
 nnoremap <C-k><C-t> <cmd>Telescope colorscheme<cr>

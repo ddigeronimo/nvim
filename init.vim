@@ -144,11 +144,19 @@ set timeoutlen=500
 " Share one statusline among all windows
 set laststatus=3
 
+" Turn off line wrapping
+set nowrap
+
+" Show trailing whitespace, tabs, EOLs, non-breaking spaces
+set listchars=eol:↵,trail:~,tab:>-,nbsp:␣,extends:◣,precedes:◢
+set list
+
 " Terminal buffer specific settings
 function! TerminalSettings()
     setlocal nonumber
     setlocal norelativenumber
-    setlocal list
+    setlocal nolist
+    setlocal wrap
 endfunction
 augroup terminal
     autocmd!

@@ -132,8 +132,8 @@ set path+=**
 " EEK, a=mouse!!!! (all mouse integrations)
 set mouse=a
 
-" Use both the * and + registers - not sure I have system clipboard working
-set clipboard+=unnamedplus
+" Syncronize with the system clipboard, requires win32yank.exe on WSL
+set clipboard=unnamedplus
 
 " Wait for half a second for keymap sequences (or to launch which-key)
 set timeoutlen=500

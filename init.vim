@@ -10,7 +10,7 @@ endif
 call plug#begin()
 " * Functional plugins *
 " Motions to surround text with enclosures and tags
-Plug 'tpope/vim-surround'
+Plug 'kylechui/nvim-surround'
 " Hotkeys for commenting
 Plug 'tpope/vim-commentary'
 " Support for git filetypes
@@ -67,6 +67,9 @@ call plug#end()
 
 " Replace Netrw with Ranger
 let g:rnvimr_enable_ex = 1 
+
+" nvim-surround (defaults)
+lua require("nvim-surround").setup()
 
 " which-key setup (defaults)
 lua require("which-key").setup {}

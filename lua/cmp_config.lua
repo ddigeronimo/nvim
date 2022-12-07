@@ -65,7 +65,8 @@ cmp.setup.cmdline(':', {
     mapping = cmp.mapping.preset.cmdline(),
     sources = cmp.config.sources({
         { name = 'path' },
-        { name = 'cmdline' }
+        -- cmp freezes when entering commands starting with !, so this excludes them
+        { name = 'cmdline', keyword_pattern = [[\!\@<!\w*]] }
     })
 })
 

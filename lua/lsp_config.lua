@@ -51,6 +51,12 @@ local on_attach = function(client, bufnr)
   end
 end
 
+-- TypeScript setup oneliner
+nvim_lsp.tsserver.setup {}
+
+-- Pyright setup oneliner
+nvim_lsp.pyright.setup {}
+
 nvim_lsp.gopls.setup{
 	cmd = {'gopls'},
 	-- for postfix snippets and analyzers

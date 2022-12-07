@@ -56,7 +56,7 @@ Plug 'hrsh7th/cmp-cmdline'
 Plug 'hrsh7th/cmp-nvim-lua'
 Plug 'saadparwaiz1/cmp_luasnip'
 
-" * Colorschemes *
+" * Colorschemes/visual tweaks *
 " Add LSP support to colorschemes without LSP or COC highlight groups
 Plug 'folke/lsp-colors.nvim'
 Plug 'NLKNguyen/papercolor-theme'
@@ -159,18 +159,30 @@ set nowrap
 
 " Show trailing whitespace, tabs, EOLs, non-breaking spaces
 set listchars=eol:↵,trail:~,tab:>-,nbsp:␣,extends:◣,precedes:◢
-set list
+" set list
 
 " Terminal buffer specific settings
 function! TerminalSettings()
     setlocal nonumber
     setlocal norelativenumber
-    setlocal nolist
+    " setlocal nolist
     setlocal wrap
 endfunction
 augroup terminal
     autocmd!
     autocmd TermOpen * call TerminalSettings()
+augroup END
+
+" Text-based buffer settings
+augroup textBuffers
+    autocmd!
+    autocmd BufReadPost *
+        \ if &filetype == "text" || &filetype == "markdown"
+        \ |     setlocal wrap
+        " \ |     setlocal nolist
+        \ |     setlocal nonumber
+        \ |     setlocal norelativenumber
+        \ | endif
 augroup END
 
 " When editing a file, always jump to the last known cursor position.
@@ -180,10 +192,10 @@ augroup END
 augroup vimStartup
     autocmd!
     autocmd BufReadPost *
-      \ if line("'\"") >= 0 && line("'\"") <= line("$") &&
-      \ &filetype != "gitcommit" && &filetype != "fugitive"
-      \ |   execute ("normal `\"")
-      \ | endif
+        \ if line("'\"") >= 0 && line("'\"") <= line("$") &&
+        \ &filetype != "gitcommit" && &filetype != "fugitive"
+        \ |   execute ("normal `\"")
+        \ | endif
 augroup END
 
 " No need for vim-highlightedyank, Neovim supports it natively
@@ -227,7 +239,7 @@ nnoremap <Leader>gs <cmd>Git<cr>
 nnoremap <Leader>ghp <cmd>GitGutterPreviewHunk<cr>
 nnoremap <leader>ghs <cmd>GitGutterStageHunk<cr>
 
-" Telescope bindings
+" Telescope bindings - TODO: Move to telescope config file?
 nnoremap <leader>ff <cmd>Telescope find_files<cr>
 nnoremap <leader>fg <cmd>Telescope live_grep<cr>
 nnoremap <leader>fb <cmd>Telescope buffers<cr>

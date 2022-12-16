@@ -35,12 +35,22 @@ Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.0' }
 Plug 'neovim/nvim-lspconfig'
 " Abstractions to simplify working with treesitter for highlighting, etc
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'nvim-treesitter/playground'
 " Dynamic keybinding menus, ported from Emacs
 Plug 'folke/which-key.nvim'
 " Use ranger as a pop-up window via RPC
 Plug 'kevinhwang91/rnvimr'
 " Lightweight status line
 Plug 'nvim-lualine/lualine.nvim'
+" UI replacements for messages, cmdline, and popupmenu
+Plug 'folke/noice.nvim'
+" Explain regex under cursor
+Plug 'bennypowers/nvim-regexplainer'
+" A truly Zen editing experience
+Plug 'folke/twilight.nvim'
+Plug 'folke/zen-mode.nvim'
+" 🦆DUCK🦆
+Plug 'tamton-aquib/duck.nvim'
 
 " * Completion *
 " Completion engine
@@ -61,6 +71,14 @@ Plug 'saadparwaiz1/cmp_luasnip'
 Plug 'folke/lsp-colors.nvim'
 Plug 'NLKNguyen/papercolor-theme'
 Plug 'folke/tokyonight.nvim', { 'branch' : 'main' }
+Plug 'shaunsingh/moonlight.nvim'
+Plug 'navarasu/onedark.nvim'
+Plug 'projekt0n/github-nvim-theme'
+Plug 'EdenEast/nightfox.nvim'
+Plug 'Mofiqul/dracula.nvim'
+Plug 'rebelot/kanagawa.nvim'
+Plug 'Yazeed1s/minimal.nvim'
+Plug 'Mofiqul/vscode.nvim'
 
 " * Dependencies *
 " lua coroutines, needed for telescope among others
@@ -69,6 +87,10 @@ Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope-fzf-native.nvim', { 'do': 'make' }
 " Icons for telescope, lualine, and other plugins
 Plug 'kyazdani42/nvim-web-devicons'
+" UI elements
+Plug 'MunifTanjim/nui.nvim'
+" Notification popups
+Plug 'rcarriga/nvim-notify'
 call plug#end()
 
 " Replace Netrw with Ranger
@@ -101,21 +123,29 @@ lua require("lualine").setup()
 set completeopt=menu,menuone,noselect,preview
 lua require("cmp_config")
 
+" Noice setup
+lua require("noice_config")
+
+" nvim-regexplainer setup
+lua require("regexplainer").setup({})
+
+" zen setup
+lua require("twilight").setup({})
+lua require("zen-mode").setup({})
+
 " Colorscheme setup
 if (has("termguicolors"))
     set termguicolors
 endif
 lua require("lsp-colors").setup( { Error = "#db4b4b", Warning = "#e0af68", Information = "#0db9d7", Hint = "#10B981" })
-let g:tokyonight_style = "storm"
-let g:tokyonight_italic_comments = 0
-let g:tokyonight_italic_keywords = 0
-colorscheme tokyonight
+lua require("kanagawa").setup({ commentStyle = { italic = false }, keywordStyle = { italic = false }, variablebuiltinStyle = { italic = false }, globalStatus = true })
+colorscheme kanagawa
 
 "========General settings========
 
-" Use relative line numbers, but display the true number of the current line
-set number
-set relativenumber
+" Enable line numbers, with normal numbering in insert and cmd modes and
+" hybrid numbering in other modes
+lua require("line_numbers")
 
 " Allows you to leave a file in the background regardless of save status
 " Also saves undo history even after saving and changing files
@@ -157,15 +187,13 @@ set laststatus=3
 " Turn off line wrapping
 set nowrap
 
-" Show trailing whitespace, tabs, EOLs, non-breaking spaces
+" If list is activated, show trailing whitespace, tabs, EOLs, non-breaking spaces
 set listchars=eol:↵,trail:~,tab:>-,nbsp:␣,extends:◣,precedes:◢
-" set list
 
 " Terminal buffer specific settings
 function! TerminalSettings()
     setlocal nonumber
     setlocal norelativenumber
-    " setlocal nolist
     setlocal wrap
 endfunction
 augroup terminal
@@ -201,7 +229,7 @@ augroup END
 " No need for vim-highlightedyank, Neovim supports it natively
 augroup hightlightedyank
     autocmd!
-    autocmd TextYankPost * silent! lua vim.highlight.on_yank({higroup="Visual", timeout=200})
+    autocmd TextYankPost * silent! lua vim.highlight.on_yank({higroup="IncSearch", timeout=400})
 augroup END
 
 "========Keybindings========
@@ -222,24 +250,24 @@ nnoremap <Leader>w <C-w>
 noremap <leader>q :bp<bar>sp<bar>bn<bar>bd<CR>
 
 " Start interactive EasyAlign in visual mode (e.g. vipga)
-xnoremap ga <Plug>(EasyAlign)
+xmap ga <Plug>(EasyAlign)
 
 " Start interactive EasyAlign for a motion/text object (e.g. gaip)
-nnoremap ga <Plug>(EasyAlign)
+nmap ga <Plug>(EasyAlign)
 
-" Windows terminal takes away <C-v> for visual block, so swap it to use the
-" leader key
-nnoremap <Leader>v <C-v>
+" Windows terminal takes away <C-v> for visual block, rebind to leader
+nnoremap <leader>v <C-v>
 
-" Map ranger to <Leader>r instead of <Leader>f
-noremap <Leader>r :RnvimrToggle<CR>
+" Map ranger to <leader>r instead of <leader>f
+noremap <leader>r :RnvimrToggle<CR>
 
-"Git bindings - <Leader>g
-nnoremap <Leader>gs <cmd>Git<cr>
-nnoremap <Leader>ghp <cmd>GitGutterPreviewHunk<cr>
+"Git bindings - <leader>g(it)
+nnoremap <leader>gs <cmd>Git<cr>
+nnoremap <leader>gb <cmd>Git blame<cr> 
+nnoremap <leader>ghp <cmd>GitGutterPreviewHunk<cr>
 nnoremap <leader>ghs <cmd>GitGutterStageHunk<cr>
 
-" Telescope bindings - TODO: Move to telescope config file?
+" Telescope bindings - <leader>f(ind)
 nnoremap <leader>ff <cmd>Telescope find_files<cr>
 nnoremap <leader>fg <cmd>Telescope live_grep<cr>
 nnoremap <leader>fb <cmd>Telescope buffers<cr>
@@ -248,5 +276,9 @@ nnoremap <leader>fd <cmd>Telescope diagnostics<cr>
 nnoremap <leader>f; <cmd>Telescope commands<cr>
 nnoremap <leader>fr <cmd>Telescope resume<cr>
 nnoremap <leader>fo <cmd>Telescope oldfiles<cr>
-" Break with leader-f for theme binding from VSCode
-nnoremap <C-k><C-t> <cmd>Telescope colorscheme<cr>
+nnoremap <leader>fc <cmd>Telescope colorscheme<cr>
+
+" Critically important duck mappings
+lua vim.keymap.set('n', '<leader>dd', function() require("duck").hatch("🦆", 5) end, {desc = "hatch a duck"})
+lua vim.keymap.set('n', '<leader>dg', function() require("duck").hatch("🦍", 10) end, {desc = "hatch a gorilla"})
+lua vim.keymap.set('n', '<leader>dk', function() require("duck").cook() end, {desc = "cook a duck"})

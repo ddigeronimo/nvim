@@ -49,7 +49,17 @@ cmp.setup ({
         { name = 'luasnip' },
         { name = 'nvim_lsp' },
         { name = 'buffer' }
-    })
+    }),
+    enabled = function()
+        -- disable completion in comments
+        local context = require 'cmp.config.context'
+        -- keep command mode completion enabled when cursor is in a comments
+        if vim.api.nvim_get_mode().mode == 'c' then
+            return true
+        else
+            return not context.in_treesitter_capture("comment") and not context.in_syntax_group("Comment")
+        end
+    end
 })
 
 -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).

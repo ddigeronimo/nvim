@@ -28,7 +28,7 @@ Plug 'easymotion/vim-easymotion'
 " Align text objects based on rules
 Plug 'junegunn/vim-easy-align'
 " Automatically close paired characters
-Plug 'townk/vim-autoclose'
+Plug 'm4xshen/autoclose.nvim'
 " Fuzzy finding pop-up menus
 Plug 'nvim-telescope/telescope.nvim', { 'tag': '0.1.0' }
 " Simplify configuring the built-in LSP 
@@ -108,7 +108,7 @@ lua require("which-key").setup {}
 " lsp setup
 lua require("lsp_config")
 autocmd BufWritePre *.go lua vim.lsp.buf.formatting()
-autocmd BufWritePre *.go lua goimports(1000)
+autocmd BufWritePre *.go lua GoImports(1000)
 
 " Treesitter setup
 lua require("treesitter_config")
@@ -132,6 +132,8 @@ lua require("regexplainer").setup({})
 " zen setup
 lua require("twilight").setup({})
 lua require("zen-mode").setup({})
+
+lua require("autoclose").setup({})
 
 " Colorscheme setup
 if (has("termguicolors"))
@@ -207,7 +209,6 @@ augroup textBuffers
     autocmd BufReadPost *
         \ if &filetype == "text" || &filetype == "markdown"
         \ |     setlocal wrap
-        " \ |     setlocal nolist
         \ |     setlocal nonumber
         \ |     setlocal norelativenumber
         \ | endif

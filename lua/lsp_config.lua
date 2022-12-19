@@ -3,7 +3,7 @@ local nvim_lsp = require('lspconfig')
 local capabilities = require('cmp_nvim_lsp').default_capabilities()
 capabilities.textDocument.completion.completionItem.snippetSupport = true
 
-local opts = { noremap=true, silent=true, desc='' }
+local opts = { noremap = true, silent = true, desc = '' }
 opts['desc'] = 'vim.diagnostic.open_float'
 vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, opts)
 opts['desc'] = 'vim.diagnostic.goto_prev'
@@ -18,12 +18,12 @@ local on_attach = function(client, bufnr)
   vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
 
   -- Mappings
-  local bufopts = { noremap=true, silent=true, buffer=bufnr, desc='' }
+  local bufopts = { noremap = true, silent = true, buffer = bufnr, desc = '' }
   bufopts['desc'] = 'vim.lsp.buf.declaration'
   vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
-  bufopts['desc'] ='vim.lsp.buf.definition'
+  bufopts['desc'] = 'vim.lsp.buf.definition'
   vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
-  bufopts['desc'] ='vim.lsp.buf.code_action'
+  bufopts['desc'] = 'vim.lsp.buf.code_action'
   vim.keymap.set('n', '<space>a', vim.lsp.buf.code_action, bufopts)
   bufopts['desc'] = 'vim.lsp.buf.hover'
   vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
@@ -57,7 +57,7 @@ local on_attach = function(client, bufnr)
   if client.server_capabilities.documentHighlightProvider then
     vim.api.nvim_exec([[
       " In the event that lsp-colors stops working, uncomment these lines to manually update the highlight groups
-      " hi LspReferenceRea cterm=bold ctermbg=DarkMagenta guibg=LightYellow
+      " hi LspReferenceRead cterm=bold ctermbg=DarkMagenta guibg=LightYellow
       " hi LspReferenceText cterm=bold ctermbg=DarkMagenta guibg=LightYellow
       " hi LspReferenceWrite cterm=bold ctermbg=DarkMagenta guibg=LightYellow
       augroup lsp_document_highlight
@@ -70,65 +70,91 @@ local on_attach = function(client, bufnr)
 end
 
 nvim_lsp.tsserver.setup {
-    capabilities = capabilities,
-    on_attach = on_attach
+  capabilities = capabilities,
+  on_attach = on_attach
 }
 
 nvim_lsp.pylsp.setup {
-    capabilities = capabilities,
-    on_attach = on_attach
+  capabilities = capabilities,
+  on_attach = on_attach
 }
 
-nvim_lsp.gopls.setup{
-	cmd = {'gopls'},
-	-- for postfix snippets and analyzers
-	capabilities = capabilities,
-	    settings = {
-	      gopls = {
-		      experimentalPostfixCompletions = true,
-		      analyses = {
-		        unusedparams = true,
-		        shadow = true,
-		     },
-		     staticcheck = true,
-		    },
-	    },
-	on_attach = on_attach,
+nvim_lsp.gopls.setup {
+  capabilities = capabilities,
+  on_attach = on_attach,
+  cmd = { 'gopls' },
+  -- for postfix snippets and analyzers
+  settings = {
+    gopls = {
+      experimentalPostfixCompletions = true,
+      analyses = {
+        unusedparams = true,
+        shadow = true,
+      },
+      staticcheck = true,
+    },
+  },
 }
 
-function goimports(timeoutms)
-local context = { source = { organizeImports = true } }
-vim.validate { context = { context, "t", true } }
+function GoImports(timeout_ms)
+  local context = { source = { organizeImports = true } }
+  vim.validate { context = { context, "t", true } }
 
-local params = vim.lsp.util.make_range_params()
-params.context = context
+  local params = vim.lsp.util.make_range_params()
+  params.context = context
 
--- See the implementation of the textDocument/codeAction callback
--- (lua/vim/lsp/handler.lua) for how to do this properly.
-local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, timeout_ms)
-if not result or next(result) == nil then return end
-local actions = result[1].result
-if not actions then return end
-local action = actions[1]
+  -- See the implementation of the textDocument/codeAction callback
+  -- (lua/vim/lsp/handler.lua) for how to do this properly.
+  local result = vim.lsp.buf_request_sync(0, "textDocument/codeAction", params, timeout_ms)
+  if not result or next(result) == nil then return end
+  local actions = result[1].result
+  if not actions then return end
+  local action = actions[1]
 
--- textDocument/codeAction can return either Command[] or CodeAction[]. If it
--- is a CodeAction, it can have either an edit, a command or both. Edits
--- should be executed first.
-if action.edit or type(action.command) == "table" then
-  if action.edit then
-    -- I had to modify this to fix an encoding related error, see: 
-    -- https://www.reddit.com/r/neovim/comments/s64ern/must_be_called_with_valid_offset_encoding
-    -- https://github.com/ray-x/navigator.lua/blob/92296c9fc8dfa7bcc232a2d45de01942758f0742/lua/navigator/util.lua#L405-L420
-    vim.lsp.util.apply_workspace_edit(action.edit, vim.lsp.get_client_by_id(1).offset_encoding)
+  -- textDocument/codeAction can return either Command[] or CodeAction[]. If it
+  -- is a CodeAction, it can have either an edit, a command or both. Edits
+  -- should be executed first.
+  if action.edit or type(action.command) == "table" then
+    if action.edit then
+      -- I had to modify this to fix an encoding related error, see:
+      -- https://www.reddit.com/r/neovim/comments/s64ern/must_be_called_with_valid_offset_encoding
+      -- https://github.com/ray-x/navigator.lua/blob/92296c9fc8dfa7bcc232a2d45de01942758f0742/lua/navigator/util.lua#L405-L420
+      vim.lsp.util.apply_workspace_edit(action.edit, vim.lsp.get_client_by_id(1).offset_encoding)
+    end
+    if type(action.command) == "table" then
+      vim.lsp.buf.execute_command(action.command)
+    end
+  else
+    vim.lsp.buf.execute_command(action)
   end
-  if type(action.command) == "table" then
-    vim.lsp.buf.execute_command(action.command)
-  end
-else
-  vim.lsp.buf.execute_command(action)
-end
 end
 
+nvim_lsp.sumneko_lua.setup {
+  capabilities = capabilities,
+  on_attach = on_attach,
+  settings = {
+    Lua = {
+      runtime = {
+        -- Tell the language server which version of Lua you're using (most likely LuaJIT in the case of Neovim)
+        version = 'LuaJIT',
+      },
+      diagnostics = {
+        -- Get the language server to recognize the `vim` global
+        globals = { 'vim' },
+      },
+      workspace = {
+        -- Make the server aware of Neovim runtime files
+        library = vim.api.nvim_get_runtime_file("", true),
+      },
+      -- Do not send telemetry data containing a randomized but unique identifier
+      telemetry = {
+        enable = false,
+      },
+      format = {
+        enable = true,
+      }
+    },
+  },
+}
 
-
---vim.lsp.set_log_level("debug")
+-- vim.lsp.set_log_level("debug")

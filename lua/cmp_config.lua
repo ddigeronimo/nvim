@@ -8,101 +8,94 @@ local has_words_before = function()
 end
 
 
-cmp.setup ({
-    snippet = { 
-        expand = function(args)
-            luasnip.lsp_expand(args.body)
-        end,
-    },
-    window = {
-        completion = cmp.config.window.bordered(),
-        documentation = cmp.config.window.bordered(),
-    },
-    mapping = cmp.mapping.preset.insert({
-        ['<C-b>'] = cmp.mapping.scroll_docs(-4),
-        ['<C-f>'] = cmp.mapping.scroll_docs(4),
-        ['<C-Space>'] = cmp.mapping.complete(),
-        ['<C-e>'] = cmp.mapping.abort(),
-        ['<CR>'] = cmp.mapping.confirm({ select = true }),
-        ["<Tab>"] = cmp.mapping(function(fallback)
-          if cmp.visible() then
-            cmp.select_next_item()
-          elseif luasnip.expand_or_jumpable() then
-            luasnip.expand_or_jump()
-          elseif has_words_before() then
-            cmp.complete()
-          else
-            fallback()
-          end
-        end, { "i", "s" }),
-        ["<S-Tab>"] = cmp.mapping(function(fallback)
-          if cmp.visible() then
-            cmp.select_prev_item()
-          elseif luasnip.jumpable(-1) then
-            luasnip.jump(-1)
-          else
-            fallback()
-          end
-        end, { "i", "s" }),
-    }),
-    sources = cmp.config.sources({
-        { name = 'luasnip' },
-        { name = 'nvim_lsp' },
-        { name = 'buffer' }
-    }),
-    enabled = function()
-        -- disable completion in comments
-        local context = require 'cmp.config.context'
-        -- keep command mode completion enabled when cursor is in a comments
-        if vim.api.nvim_get_mode().mode == 'c' then
-            return true
-        else
-            return not context.in_treesitter_capture("comment") and not context.in_syntax_group("Comment")
-        end
+cmp.setup({
+  snippet = {
+    expand = function(args)
+      luasnip.lsp_expand(args.body)
+    end,
+  },
+  window = {
+    completion = cmp.config.window.bordered(),
+    documentation = cmp.config.window.bordered(),
+  },
+  mapping = cmp.mapping.preset.insert({
+    ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+    ['<C-f>'] = cmp.mapping.scroll_docs(4),
+    ['<C-Space>'] = cmp.mapping.complete(),
+    ['<C-e>'] = cmp.mapping.abort(),
+    ['<CR>'] = cmp.mapping.confirm({ select = true }),
+    ["<Tab>"] = cmp.mapping(function(fallback)
+      if cmp.visible() then
+        cmp.select_next_item()
+      elseif luasnip.expand_or_jumpable() then
+        luasnip.expand_or_jump()
+      elseif has_words_before() then
+        cmp.complete()
+      else
+        fallback()
+      end
+    end, { "i", "s" }),
+    ["<S-Tab>"] = cmp.mapping(function(fallback)
+      if cmp.visible() then
+        cmp.select_prev_item()
+      elseif luasnip.jumpable(-1) then
+        luasnip.jump(-1)
+      else
+        fallback()
+      end
+    end, { "i", "s" }),
+  }),
+  sources = cmp.config.sources({
+    { name = 'luasnip' },
+    { name = 'nvim_lsp' },
+    { name = 'buffer' }
+  }),
+  enabled = function()
+    -- disable completion in comments
+    local context = require 'cmp.config.context'
+    -- keep command mode completion enabled when cursor is in a comments
+    if vim.api.nvim_get_mode().mode == 'c' then
+      return true
+    else
+      return not context.in_treesitter_capture("comment") and not context.in_syntax_group("Comment")
     end
+  end
 })
 
 -- Use buffer source for `/` (if you enabled `native_menu`, this won't work anymore).
 cmp.setup.cmdline('/', {
-    mapping = cmp.mapping.preset.cmdline(),
-    sources = {
-        { name = 'buffer' }
-    }
+  mapping = cmp.mapping.preset.cmdline(),
+  sources = {
+    { name = 'buffer' }
+  }
 })
 
 -- Use cmdline & path source for ':' (if you enabled `native_menu`, this won't work anymore).
 cmp.setup.cmdline(':', {
-    mapping = cmp.mapping.preset.cmdline(),
-    sources = cmp.config.sources({
-        { name = 'path' },
-        -- cmp freezes when entering commands starting with !, so this excludes them
-        { name = 'cmdline', keyword_pattern = [[\!\@<!\w*]] }
-    })
-})
-
-cmp.setup.filetype('lua', {
-    sources = cmp.config.sources({
-        { name = 'nvim_lua' },
-        { name = 'buffer' }
-    })
+  mapping = cmp.mapping.preset.cmdline(),
+  sources = cmp.config.sources({
+    { name = 'path' },
+    -- cmp freezes when entering commands starting with !, so this excludes them
+    { name = 'cmdline', keyword_pattern = [[\!\@<!\w*]] }
+  })
 })
 
 luasnip.config.set_config({
-	history = true,
-	-- Update more often, :h events for more info.
-	updateevents = "TextChanged,TextChangedI",
-	ext_opts = {
-		[types.choiceNode] = {
-			active = {
-				virt_text = { { "choiceNode", "Comment" } },
-			},
-		},
-	},
-	-- treesitter-hl has 100, use something higher (default is 200).
-	ext_base_prio = 300,
-	-- minimal increase in priority.
-	ext_prio_increase = 1,
-	enable_autosnippets = true,
+  history = true,
+  -- Update more often, :h events for more info.
+  updateevents = "TextChanged,TextChangedI",
+  ext_opts = {
+    [types.choiceNode] = {
+      active = {
+        virt_text = { { "choiceNode", "Comment" } },
+      },
+    },
+  },
+  -- treesitter-hl has 100, use something higher (default is 200).
+  ext_base_prio = 300,
+  -- minimal increase in priority.
+  ext_prio_increase = 1,
+  enable_autosnippets = true,
 })
 
 -- Load VSCode-format snippets (i.e. friendly-snippets)

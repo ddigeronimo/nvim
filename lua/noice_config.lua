@@ -8,6 +8,7 @@ require("noice").setup({
         }
     },
     presets = {
-        lsp_doc_border = true -- add borders to hover docs and signature help
+        lsp_doc_border = true, -- add borders to hover docs and signature help
+        long_message_to_split = true,
     }
 })
